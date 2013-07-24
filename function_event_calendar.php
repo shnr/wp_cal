@@ -165,16 +165,72 @@ function get_calendar_cus($initial = true, $echo = true, $cats = array(), $capti
         }
     }
 
+    $calendar_output = '';
+
+    if($nav != 0){
+
+        $calendar_output = '<div id="calHead">';
+
+        if ( isset($previous) ) {
+            //$calendar_output .= "\n\t\t".'<td colspan="3" id="prev"><a href="' . get_month_link($previous->year, $previous->month) . '" title="' . esc_attr( sprintf(__('View posts for %1$s %2$s'), $wp_locale->get_month($previous->month), date('Y', mktime(0, 0 , 0, $previous->month, 1, $previous->year)))) . '">&laquo; ' . $wp_locale->get_month_abbrev($wp_locale->get_month($previous->month)) . '</a></td>';
+            $uri = $_SERVER['REQUEST_URI'];
+
+            if(strstr($uri, '?cy')){
+                $uri = preg_replace('/\?cy=+\d{1,4}/', '', $uri);
+                $uri = preg_replace('/&cm=+\d{1,2}/', '', $uri);
+            }else{
+                $uri = preg_replace('/&cy=+\d{1,4}/', '', $uri);
+                $uri = preg_replace('/&cm=+\d{1,2}/', '', $uri);
+            }
+            $uri = $uri . "?cy=" . $previous->year . "&cm=" . $previous->month;
+            //echo $uri;
+        
+
+            $calendar_output .= "\n\t\t".'<div class="past"><a href="' . $uri . '" title="' . esc_attr( sprintf(__('View posts for %1$s %2$s'), $wp_locale->get_month($previous->month), date('Y', mktime(0, 0 , 0, $previous->month, 1, $previous->year)))) . '">&lt;&lt;</a></div>';
+//            $calendar_output .= "\n\t\t".'<td colspan="3" id="prev"><a href="' . $uri . '" title="' . esc_attr( sprintf(__('View posts for %1$s %2$s'), $wp_locale->get_month($previous->month), date('Y', mktime(0, 0 , 0, $previous->month, 1, $previous->year)))) . '">&laquo; ' . $wp_locale->get_month_abbrev($wp_locale->get_month($previous->month)) . '</a></td>';
+
+        } else {
+            $calendar_output .= "\n\t\t".'<div class="past">&nbsp;</div>';
+        }
+
+        $calendar_output .= '<div class="month">2013年7月</div>';
+
+        if ( $next ) {
+            $uri = $_SERVER['REQUEST_URI'];
+            if(strstr($uri, '?cy')){
+                $uri = preg_replace('/\?cy=+\d{1,4}/', '', $uri);
+                $uri = preg_replace('/&cm=+\d{1,2}/', '', $uri);
+            }else{
+                $uri = preg_replace('/&cy=+\d{1,4}/', '', $uri);
+                $uri = preg_replace('/&cm=+\d{1,2}/', '', $uri);
+            }
+            $uri = $uri . "?cy=" . $next->year . "&cm=" . $next->month;
+
+//            $calendar_output .= "\n\t\t".'<td colspan="3" id="next"><a href="' . get_month_link($next->year, $next->month) . '" title="' . esc_attr( sprintf(__('View posts for %1$s %2$s'), $wp_locale->get_month($next->month), date('Y', mktime(0, 0 , 0, $next->month, 1, $next->year))) ) . '">' . $wp_locale->get_month_abbrev($wp_locale->get_month($next->month)) . ' &raquo;</a></td>';
+            $calendar_output .= "\n\t\t".'<div class="future"><a href="' . $uri . '" title="' . esc_attr( sprintf(__('View posts for %1$s %2$s'), $wp_locale->get_month($next->month), date('Y', mktime(0, 0 , 0, $next->month, 1, $next->year))) ) . '">&gt;&gt;</a></div>';
+        } else {
+            $calendar_output .= "\n\t\t".'<div class="future">&nbsp;</div>';
+        }
+
+        $calendar_output .= '</div>';
+    
+    }else{
+
+    }
+
+
+
+    // table head
     /* translators: Calendar caption: 1: month name, 2: 4-digit year */
     $calendar_caption = _x('%1$s %2$s', 'calendar caption');
 
     if($caption){
-        $calendar_output = '<table id="wp-calendar">
+        $calendar_output .= '<table id="wp-calendar">
         <caption>' . sprintf($calendar_caption, $wp_locale->get_month($thismonth), date('Y', $unixmonth)) . '</caption>
         <thead>
         <tr>';
     }else{
-        $calendar_output = '<table id="wp-calendar">
+        $calendar_output .= '<table id="wp-calendar">
         <thead>
         <tr>';
     }
@@ -192,69 +248,13 @@ function get_calendar_cus($initial = true, $echo = true, $cats = array(), $capti
         $calendar_output .= "\n\t\t<th scope=\"col\" title=\"$wd\">$day_name</th>";
     }
 
-    if($nav != 0){
-        $calendar_output .= '
-        </tr>
-        </thead>
+    $calendar_output .= '
+    </tr>
+    </thead>
 
-        <tfoot>
-        <tr>';
+    <tbody>
+    <tr>';
 
-        if ( isset($previous) ) {
-            //$calendar_output .= "\n\t\t".'<td colspan="3" id="prev"><a href="' . get_month_link($previous->year, $previous->month) . '" title="' . esc_attr( sprintf(__('View posts for %1$s %2$s'), $wp_locale->get_month($previous->month), date('Y', mktime(0, 0 , 0, $previous->month, 1, $previous->year)))) . '">&laquo; ' . $wp_locale->get_month_abbrev($wp_locale->get_month($previous->month)) . '</a></td>';
-            $uri = $_SERVER['REQUEST_URI'];
-
-            if(strstr($uri, '?cy')){
-                $uri = preg_replace('/\?cy=+\d{1,4}/', '', $uri);
-                $uri = preg_replace('/&cm=+\d{1,2}/', '', $uri);
-            }else{
-                $uri = preg_replace('/&cy=+\d{1,4}/', '', $uri);
-                $uri = preg_replace('/&cm=+\d{1,2}/', '', $uri);
-            }
-            $uri = $uri . "?cy=" . $previous->year . "&cm=" . $previous->month;
-            //echo $uri;
-        
-
-            $calendar_output .= "\n\t\t".'<td colspan="3" id="prev"><a href="' . $uri . '" title="' . esc_attr( sprintf(__('View posts for %1$s %2$s'), $wp_locale->get_month($previous->month), date('Y', mktime(0, 0 , 0, $previous->month, 1, $previous->year)))) . '">&laquo; ' . $wp_locale->get_month_abbrev($wp_locale->get_month($previous->month)) . '</a></td>';
-        } else {
-            $calendar_output .= "\n\t\t".'<td colspan="3" id="prev" class="pad">&nbsp;</td>';
-        }
-
-        $calendar_output .= "\n\t\t".'<td class="pad">&nbsp;</td>';
-
-        if ( $next ) {
-            $uri = $_SERVER['REQUEST_URI'];
-            if(strstr($uri, '?cy')){
-                $uri = preg_replace('/\?cy=+\d{1,4}/', '', $uri);
-                $uri = preg_replace('/&cm=+\d{1,2}/', '', $uri);
-            }else{
-                $uri = preg_replace('/&cy=+\d{1,4}/', '', $uri);
-                $uri = preg_replace('/&cm=+\d{1,2}/', '', $uri);
-            }
-            $uri = $uri . "?cy=" . $next->year . "&cm=" . $next->month;
-
-//            $calendar_output .= "\n\t\t".'<td colspan="3" id="next"><a href="' . get_month_link($next->year, $next->month) . '" title="' . esc_attr( sprintf(__('View posts for %1$s %2$s'), $wp_locale->get_month($next->month), date('Y', mktime(0, 0 , 0, $next->month, 1, $next->year))) ) . '">' . $wp_locale->get_month_abbrev($wp_locale->get_month($next->month)) . ' &raquo;</a></td>';
-            $calendar_output .= "\n\t\t".'<td colspan="3" id="next"><a href="' . $uri . '" title="' . esc_attr( sprintf(__('View posts for %1$s %2$s'), $wp_locale->get_month($next->month), date('Y', mktime(0, 0 , 0, $next->month, 1, $next->year))) ) . '">' . $wp_locale->get_month_abbrev($wp_locale->get_month($next->month)) . ' &raquo;</a></td>';
-        } else {
-            $calendar_output .= "\n\t\t".'<td colspan="3" id="next" class="pad">&nbsp;</td>';
-        }
-
-        $calendar_output .= '
-        </tr>
-        </tfoot>
-
-        <tbody>
-        <tr>';
-    
-    }else{
-        $calendar_output .= '
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr>';
-
-    }
 
 
     // Get days with posts

@@ -1,7 +1,7 @@
 <?php
-
 /**
  * Customised calendar function
+ *
  *
  * @param bool $initial Optional, default is true. Use initial calendar names.
  * @param bool $echo Optional, default is true. Set to false for return.
@@ -14,9 +14,8 @@
 function get_calendar_cus($initial = true, $echo = true, $cats = array(), $caption = false, $nav = 0, $daybefore = false) {
     global $wpdb, $m, $monthnum, $year, $wp_locale, $posts;
     $m = 0;
-    $monthnum = 0;
-    $year = 0;
-
+    $monthnum = 0; // monbth!!
+    $year = 0; // year!
     $cache = array();
     $key = md5( $m . $monthnum . $year );
     if ( $cache = wp_cache_get( 'get_calendar', 'calendar' ) ) {
